@@ -1,81 +1,79 @@
-# ECE-2112-PA-2
+# ECE-2112-PA-3
 ## Made by: Hera Marishka Aquino | 2-ECE-C
-Programming Assignment 2 for Advanced Computer Programming (S.Y. 2026-2027). It includes solutions to three Python problems focusing on Module 2: Numerical Python (NumPy)
+Programming Assignment 3 for Advanced Computer Programming (S.Y. 2026-2027). It includes solutions to three Python problems focusing on Module 3: Pandas
 
-Before coding, make sure to import NumPy by using:
+Before coding, make sure to import Pandas by using:
 ```python
-import numpy as np
+import pandas as pd
+```
+Also input a created list (optional):
+```python
+cars = pd.read_csv('cars.csv')
+cars
 ```
 
-# 1. Reproducible Normalization Problem
-Initialize a 5×5 NumPy array `⁠X`⁠ using random integers from 10 to 100 with seed ⁠`2112`⁠. Apply Z-score standardization across all 25 elements using NumPy's default ⁠`mean()`⁠ and ⁠`std()`⁠ functions, saving the standardized array to `⁠X_normalized⁠`.
+# 1. Positional and Label-Based Slicing
+After initializing the `cars` DataFrame, perform the following tasks:
 
-1. Display `X` and `X_normalized`
-2. Print the mean and standard deviation of `X_normalized` for validation.
-3. Save `X_normalized` as an `.npy` file named `X_normalized.npy`
+1. Output the dataset's shape and full list of column headers.
+2. Create `cars_6_to_10` by extracting rows 6 through 10 (1-indexed) via `.iloc`.
+3. Select and display the columns `Model`, `mpg`, `cyl`, `hp`, and `gear` in order using column labels.
 ```python
-np.random.seed(2112)
-X = np.random.randint(10, 101, size=(5, 5))
+print("Car Shape: ", cars.shape)
+print("Column Names: ", list(cars.columns))
 
-m = np.mean(X)
-s = np.std(X)
+cars.head()
+cars.tail()
 
-X_normalized = (X - m) / s
+cars_6_to_10 = cars.iloc[6:11]
+data = {'Model': ['Duster 360', 'Merc 240D', 'Merc 230', 'Merc 280', 'Merc 280C'],
+     'mpg': [14.3, 24.4, 22.8, 19.2, 17.8],
+     'cyl': [8, 4, 4, 6, 6],
+     'hp': [245, 62, 95, 123, 123],
+     'gear': [3, 4, 4, 4, 4]}
 
-print("Problem A values \n")
-print("Array: \n", X)
-print("\n X_normalized: \n", X_normalized)
-print("\n Normalized Mean: \n", np.mean(X_normalized))
-print("\n Normalized Standard Deviation: \n", np.std(X_normalized))
-
-np.save("X_normalized.npy", X_normalized)
+df = pd.DataFrame(data, columns = ['Model', 'mpg', 'cyl', 'hp', 'gear'])
+df
 ```
 
-# 2. Cubes Divisible by 4 Problem
-1. Construct a 10 x 10 NumPy array `⁠C`⁠ containing the cubes of integers from 1 through 100.
-2. Apply a Boolean mask to `⁠C`⁠ to select elements divisible by 4 in row-major order and save the result to `⁠div_by_4`⁠.
-3. Display ⁠`C.shape`⁠, `⁠div_by_4`⁠, and ⁠`len(div_by_4)`⁠ to confirm a 50-element array bounded by 8 and 1,000,000.
-4. Export the resulting array as `⁠div_by_4.npy⁠`.
+# 2. Model Lookup
+Using conditional filtering on the `Model` column, complete the following:
+
+1. Toyota Corolla: Locate and display its entire row. Assign this DataFrame to `toyota`.
+2. Pontiac Firebird: Extract its row, retaining only the `Model`, `mpg`, `hp`, and `wt` columns. Assign this DataFrame to `pontiac`.
+  Note: Both lookups must use dynamic Boolean conditions instead of hard-coded row numbers.
 ```python
-integers = np.arange(1, 101)
-cubes = integers ** 3
-C = cubes.reshape(10, 10)
+df = cars
+df
 
-div_by_4 = C [C % 4 == 0]
+toyota = df[cars['Model'] == 'Toyota Corolla']
+display(toyota)
 
-print("Problem B values \n")
-print("Shape of C: \n", C.shape)
-print("\n Array Divisible by 4: \n", div_by_4)
-print("\n Number of Selected elements: \n", len(div_by_4))
-
-np.save("div_by_4", div_by_4)
+pontiac = df.loc[cars['Model'] == 'Pontiac Firebird', ['Model', 'mpg', 'hp', 'wt']]
+display(pontiac)
 ```
 
-# 3. Above-Mean Squares Problem
-1. Construct a 6 x 6 NumPy array ⁠`S⁠` containing the squared values of the first 36 positive integers in row-major order.
-2. Calculate the average of all elements as `⁠S_mean`⁠.
-3. Apply a Boolean filter to select elements where `S > S (mean)`, saving the output to `⁠above_mean`⁠.
-4. Display `⁠S`⁠, `⁠S_mean`⁠, `⁠above_mean`⁠, and its element count to confirm 15 items ranging from 484 to 1,296.
-5. Export ⁠`above_mean⁠` to `⁠above_mean.npy`⁠.
+# 3. Multi-Model Subsetting
+1. Filter `cars` using the `Model` column to extract entries for `"Datsun 710"`, `"Lotus Europa"`, and `"Ferrari Dino"`.
+2. Subset the resulting rows to include only the columns `Model`, `mpg`, `cyl`, `hp`, and `gear`, storing the result in `selected_cars`.
+3. Print `selected_cars` and `selected_cars.shape`.
+   Constraint: Select records strictly by model value, verifying the final dimensions are (3, 5).
 ```python
-integers_36 = np.arange(1, 37)
-squares = integers_36 ** 2
-S = squares.reshape(6, 6)
+df
 
-S_mean = S.mean()
+data = {'Model': ['Datsun 710', 'Lotus Europa', 'Ferrari Dino'],
+        'mpg': [22.8, 30.4, 19.7],
+        'cyl': [4, 4, 6],
+        'hp': [93, 113, 175],
+        'gear': [4, 5, 5]}
 
-above_mean = S[S > S_mean]
+selected_cars = pd.DataFrame(data, columns = ['Model', 'mpg', 'cyl', 'hp', 'gear'])
+selected_cars
 
-print("Problem C: \n")
-print("Array S: \n", S)
-print("\n S_mean: \n", S_mean)
-print("\n above_mean: \n", above_mean)
-print("\n Number of Selected Elements: \n", len(above_mean))
-
-np.save("above_mean.npy", above_mean)
+print("Selected Cars Shape: ", selected_cars.shape)
  ```
 
 Thank you so much for reading!
 
 ## ReadMe file Version History:
-September 3, 2026 - Initial ReadMe output uploaded.
+September 9, 2026 - Initial ReadMe output uploaded.
